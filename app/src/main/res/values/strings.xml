@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Major_project</string>
+    <string name="Temperature_label"><u>Temperature</u></string>
+    <string name="Humidity_label"><u>Humidity</u></string>
+    <string name="Light_label"><u>Light</u></string>
+    <string name="Current_range">Current Value:  </string>
+    <string name="Ideal_range">Ideal Range:  </string>
+    <string name="Back">Back</string>
+    <string name="unlock_rm">Unlock Room</string>
+    <string name="show_rm_cond">Show Room Conditions</string>
+    <string name="update_rmcontents">Update Room Contents</string>
+    <string name="update_rm_cond">Update Ideal Room Conditions</string>
+</resources>
+
+
