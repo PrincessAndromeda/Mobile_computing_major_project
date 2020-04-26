@@ -131,7 +131,7 @@ public class MainActivity extends Activity
     {
         if(target_door>=0)
         {
-            // move to update_Conds activity
+            to_update_conds_screen();// move to update_Conds activity
             //get user to enter data
             // take data and send it in update conditions NFC message
             // display the request scanner screen
@@ -263,6 +263,11 @@ public class MainActivity extends Activity
         Intent myIntent = new Intent(MainActivity.this, Update_conts.class);
         startActivity(myIntent); //if do not need to get data back.
 
+    }
+
+    public void to_update_conds_screen() {// function named in OnClick
+        Intent myIntent = new Intent(MainActivity.this, Update_conditions.class);
+        startActivity(myIntent); //if do not need to get data back.
     }
     /*
     //Saving as a base for future use

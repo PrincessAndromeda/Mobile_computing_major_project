@@ -13,6 +13,20 @@
     <string name="Save">save</string>
     <string name="onlendprompt">On lend from?</string>
     <string name="accessprompt">Who can access?</string>
+    <string name="min_temp">Minimum Temp.</string>
+    <string name="max_temp">Maximum Temp.</string>
+    <string name="min_hum">Minimum Humidity</string>
+    <string name="max_hum">Maximum Humidity</string>
+    <string name="min_lux">Minimum Lux</string>
+    <string name="max_lux">Maximum Lux</string>
+
+    <string name="min_temp_hint">Enter Minimum Temp.</string>
+    <string name="max_temp_hint">Enter Maximum Temp.</string>
+    <string name="min_hum_hint">Enter Minimum Humidity</string>
+    <string name="max_hum_hint">Enter Maximum Humidity</string>
+    <string name="min_lux_hint">Enter Minimum Lux</string>
+    <string name="max_lux_hint">Enter Maximum Lux</string>
+
     <string-array name="museums">
         <item>M1</item>
         <item>M2</item>
