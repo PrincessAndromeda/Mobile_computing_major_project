@@ -11,6 +11,8 @@
     <string name="update_rmcontents">Update Room Contents</string>
     <string name="update_rm_cond">Update Ideal Room Conditions</string>
     <string name="Save">save</string>
+    <string name="onlendprompt">On lend from?</string>
+    <string name="accessprompt">Who can access?</string>
     <string-array name="museums">
         <item>M1</item>
         <item>M2</item>
@@ -18,7 +20,13 @@
         <item>M4</item>
         <item>M5</item>
     </string-array>
-
+    <string-array name="User_access_vlv">
+        <item>user1</item>
+        <item>user2</item>
+        <item>user3</item>
+        <item>user4</item>
+        <item>user5</item>
+    </string-array>
 </resources>
 
 

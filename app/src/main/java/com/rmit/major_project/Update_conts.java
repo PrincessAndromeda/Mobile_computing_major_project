@@ -15,20 +15,29 @@ public class Update_conts extends Activity implements AdapterView.OnItemSelected
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_conts2);
-        Spinner spinner = (Spinner) findViewById(R.id.On_lend_from);
+        Spinner on_lend_from = (Spinner) findViewById(R.id.On_lend_from);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.museums, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this, R.array.museums, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+        on_lend_from.setAdapter( new NothingSelectedSpinnerAdapter(adapter1, R.layout.contact_spinner_row_nothing_selected_lend ,this));
+        on_lend_from.setOnItemSelectedListener(this);
+        Spinner user_lvl = (Spinner) findViewById(R.id.Who_can_access);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,R.array.User_access_vlv, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        user_lvl.setAdapter(new NothingSelectedSpinnerAdapter(adapter2, R.layout.contact_spinner_row_nothing_selected_users ,this));
+        user_lvl.setOnItemSelectedListener(this);
 
 
 
 
     }
+
+
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         // An item was selected. You can retrieve the selected item using
         // parent.getItemAtPosition(pos)
@@ -42,4 +51,7 @@ public class Update_conts extends Activity implements AdapterView.OnItemSelected
         finish();
     }
 }
+
+
+
 
