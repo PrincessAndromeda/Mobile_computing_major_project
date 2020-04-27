@@ -1,0 +1,4 @@
+#Sun Apr 26 21:35:29 AEST 2020
+base.0=/home/user/Major_project/app/build/intermediates/dex/debug/out/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
