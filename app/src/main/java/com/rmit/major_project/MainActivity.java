@@ -40,21 +40,23 @@ public class MainActivity extends Activity
 
     private NfcAdapter mNfcAdapter;
 
-    public int target_door;
+    public static int  target_door=0;
 
 
 
-    public void ScannerRequestDialogue(){
+
+    public void ScannerRequestDialogue(final String message){
 
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage("Please hold device to scanner");
         alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setNeutralButton("Cancel",new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNeutralButton("Ok",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
-                Toast.makeText(MainActivity.this,"You clicked yes button",Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this,"You clicked yes button",Toast.LENGTH_LONG).show();
+                addMessage(message);
 
-                finish();
+                //finish();
             }
         });
 
@@ -67,89 +69,104 @@ public class MainActivity extends Activity
         alertDialogBuilder.setTitle("Access Denied.");
         alertDialogBuilder.setMessage("Please contact your system Administrator for access");
         alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setNeutralButton("Ok",new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNeutralButton("Close",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
-                Toast.makeText(MainActivity.this,"You clicked yes button",Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this,"You clicked yes button",Toast.LENGTH_LONG).show();
             }
         });
 
         final AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+    public void Get_target_door()
+    {
+        ScannerRequestDialogue("##00000##");
+        //String newMessage ="##00001##";
+        //addMessage(newMessage);
 
+
+    }
     public void Unlock_door(View view)
     {
-        if(target_door>=0) // check that there is a target door
+        if(target_door==0) // check that there is a target door
         {
-            //Check if user has access to door(BD lookup)
-            //If yes output NFC string
-            //If no
-            AccessDeniedAlert();
+            Get_target_door();
+
+
         }
-        else
-        {
-            //Tell user to scan target door
-            //Output request NFC
-            //See what comes back
+        else {
+            //Check if user has access to door(BD lookup) TODO
+            //if(USER HAS ACCESS){
+            ScannerRequestDialogue("##00010##");
+            //}
+        /*else
+            {
+                AccessDeniedAlert();
+            }*/
         }
+
+
     }
     public void View_current_conds(View view)
     {
-        if(target_door>=0)
+        if(target_door==0) // check that there is a target door
         {
-            //Send climate data NFC message
-            //wait for NFC handler to handel the response
+            Get_target_door();
+
+
         }
         else
-        {
-            //Tell user to scan target door
-            //Output request NFC
-            //See what comes back
-        }
+            {
+                ScannerRequestDialogue("##00002##");//Send climate data NFC message
+             }
+
+        //wait for NFC handler to handel the response
     }
     public void Update_contents(View view)
     {
-        if(target_door>=0)
+        if(target_door==0) // check that there is a target door
         {
+            Get_target_door();
 
+
+        }
+        else {
             to_update_conts_screen();// move to update_conts activity
+            while (messagesToSendArray==null)
+            { //Empty loop}
+            }
+            //TODO
             //get user to enter data
             // take data and send it in update contents NFC message
             // display the request scanner screen
             // wait for the scanner to send back a room contents NFC message
-
-        }
-        else
-        {
-            //Tell user to scan target door
-            //Output request NFC
-            //See what comes back
         }
     }
     public void Update_conds(View view)
     {
-        if(target_door>=0)
+        if(target_door==0) // check that there is a target door
         {
-            to_update_conds_screen();// move to update_Conds activity
-            //get user to enter data
-            // take data and send it in update conditions NFC message
-            // display the request scanner screen
-            // wait for the scanner to send back an ACK NFC message
+            Get_target_door();
 
         }
-        else
-        {
-            //Tell user to scan target door
-            //Output request NFC
-            //See what comes back
+        else {
+            to_update_conds_screen();// move to update_conts activity
+            while (messagesToSendArray == null) { //Empty loop}
+            }
         }
+        // move to update_Conds activity
+        //get user to enter data
+        // take data and send it in update conditions NFC message
+        // display the request scanner screen
+        // wait for the scanner to send back an ACK NFC message
+
     }
 
     public void addMessage(String message) {
         messagesToSendArray.add(message);
 
-        //Toast.makeText(this, "Added Message", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Added Message", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -185,7 +202,7 @@ public class MainActivity extends Activity
                 records[i] = record;
             }
         }
-        records[messagesToSendArray.size()] = NdefRecord.createApplicationRecord(getPackageName());
+        records[messagesToSendArray.size()] = NdefRecord.createApplicationRecord("com.rmit.nfctestproj");
         return records;
     }
 
@@ -219,18 +236,63 @@ public class MainActivity extends Activity
 
                     //Make sure we don't pass along our AAR (Android Applicatoin Record)
                     if (string.equals(getPackageName())) { continue; }
-                    messagesReceivedArray.add(string.substring(3));
+                    messagesReceivedArray.add(string);
 
 
                 }
-                if((messagesReceivedArray.get(0).contains("##00001##")))
+                if((messagesReceivedArray.get(0).contains("##00001##"))) //door_number
                 {
-                    to_cond_screen(messagesReceivedArray);
+                    if(messagesReceivedArray.size()>1)
+                    {
+                        target_door=Integer.parseInt(messagesReceivedArray.get(1));
+                        Toast.makeText(this,"Door number is "+target_door,Toast.LENGTH_LONG).show();
+                    }
+                    else
+                    {Toast.makeText(this,"ERROR NO DOOR NUMBER SENT",Toast.LENGTH_LONG).show(); }
+                }
+                if((messagesReceivedArray.get(0).contains("##00003##")))//sent current conditions
+                {
+                    if(messagesReceivedArray.size()>3) {
+                        to_cond_screen(messagesReceivedArray);
+                    }
+                    else{Toast.makeText(this,"ERROR NOT ENOUGH CONDITION DATA SENT: "+messagesReceivedArray.size(),Toast.LENGTH_LONG).show();}
+
+                }
+                if((messagesReceivedArray.get(0).contains("##00005##")))// sent current contents
+                {
+                    if(messagesReceivedArray.size()>3) {
+                        to_cont_screen(messagesReceivedArray);
+                    }
+                    else {Toast.makeText(this, "ERROR NOT ENOUGH CONTENTS DATA SENT: " + messagesReceivedArray.size(), Toast.LENGTH_LONG).show(); }
+                }
+                if((messagesReceivedArray.get(0).contains("##00007##"))) //sent update ack conditions
+                {
+                    if(messagesReceivedArray.size()>3) {
+                        to_cond_screen(messagesReceivedArray);
+                    }
+                    else{Toast.makeText(this,"ERROR NOT ENOUGH CONDITION ACK DATA SENT: "+messagesReceivedArray.size(),Toast.LENGTH_LONG).show();}
+                }
+                if((messagesReceivedArray.get(0).contains("##00009##"))) //sent update ack contents
+                {
+                    if(messagesReceivedArray.size()>3) {
+                        to_cont_screen(messagesReceivedArray);
+                    }
+                    else {Toast.makeText(this, "ERROR NOT ENOUGH CONTENTS ACK DATA SENT: " + messagesReceivedArray.size(), Toast.LENGTH_LONG).show(); }
+                }
+                if((messagesReceivedArray.get(0).contains("##00011##"))) //sent update ack contents
+                {
+                    if(messagesReceivedArray.size()>1)
+                    {
+                        if (Integer.parseInt(messagesReceivedArray.get(1)) == 1) {
+                            Toast.makeText(this, "DOOR UNLOCKED", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(this, "DOOR LOCKED TRY AGAIN", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    else {Toast.makeText(this, "ERROR NO DOOR ACK" + messagesReceivedArray.size(), Toast.LENGTH_LONG).show(); }
                 }
 
-
-                Toast.makeText(this, "Received " + messagesReceivedArray.size() + " Messages", Toast.LENGTH_LONG).show();
-                updateTextViews();
+                updateTextViews();//REMEMBER TO REMOVE TODO
             }
             else {
                 Toast.makeText(this, "Received Blank Parcel", Toast.LENGTH_LONG).show();
@@ -252,20 +314,26 @@ public class MainActivity extends Activity
         //handleNfcIntent(getIntent());
     }
 
-    public void to_cond_screen(ArrayList data) {// function named in OnClick
+    public void to_cond_screen(ArrayList data) {
         Intent myIntent = new Intent(MainActivity.this, ViewCurrentConds.class);
         myIntent.putStringArrayListExtra("Room_data", data);
         startActivity(myIntent); //if do not need to get data back.
 
     }
+    public void to_cont_screen(ArrayList data) { //TODO
+        /*Intent myIntent = new Intent(MainActivity.this, ViewCurrentConds.class);
+        myIntent.putStringArrayListExtra("Room_data", data);
+        startActivity(myIntent); //if do not need to get data back.*/
 
-    public void to_update_conts_screen() {// function named in OnClick
+    }
+
+    public void to_update_conts_screen() {
         Intent myIntent = new Intent(MainActivity.this, Update_conts.class);
         startActivity(myIntent); //if do not need to get data back.
 
     }
 
-    public void to_update_conds_screen() {// function named in OnClick
+    public void to_update_conds_screen() {
         Intent myIntent = new Intent(MainActivity.this, Update_conditions.class);
         startActivity(myIntent); //if do not need to get data back.
     }
@@ -280,15 +348,8 @@ public class MainActivity extends Activity
     */
 
 
-    private  void updateTextViews() {
-        /*txtMessagesToSend.setText("Messages To Send:\n");
-        //Populate Our list of messages we want to send
-        if(messagesToSendArray.size() > 0) {
-            for (int i = 0; i < messagesToSendArray.size(); i++) {
-                txtMessagesToSend.append(messagesToSendArray.get(i));
-                txtMessagesToSend.append("\n");
-            }
-        }*/
+    private  void updateTextViews() //FOR DEBUGGING
+    {
 
         txtReceivedMessages.setText("Messages Received:\n");
         //Populate our list of messages we have received
@@ -320,7 +381,6 @@ public class MainActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        target_door=1;
 
 
 
@@ -339,13 +399,9 @@ public class MainActivity extends Activity
         }
 
 
-        //txtBoxAddMessage = (EditText) findViewById(R.id.txtBoxAddMessage);
-        //txtMessagesToSend = (TextView) findViewById(R.id.txtMessageToSend);
-        txtReceivedMessages = (TextView) findViewById(R.id.Text_text);
-        //Button btnAddMessage = (Button) findViewById(R.id.buttonAddMessage);
 
-        //btnAddMessage.setText("Add Message");
-        updateTextViews();
+        txtReceivedMessages = (TextView) findViewById(R.id.Text_text);//DEBUGGING
+        updateTextViews();//DEBUGGING REMOVE TODO
 
         if (getIntent().getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
             handleNfcIntent(getIntent());

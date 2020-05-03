@@ -1,0 +1,4 @@
+#Sun May 03 23:32:55 AEST 2020
+base.0=C\:\\Users\\Jonat\\OneDrive - RMIT University\\3rd Year\\Mobile computing\\Mobile_computing_major_project\\app\\build\\intermediates\\dex\\debug\\out\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
