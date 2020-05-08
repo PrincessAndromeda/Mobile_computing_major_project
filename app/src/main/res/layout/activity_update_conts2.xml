@@ -33,17 +33,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <RadioButton
-        android:id="@+id/radioButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/On_lend_from"
-        app:layout_constraintEnd_toStartOf="@+id/On_lend_from"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/On_lend_from" />
-
     <Spinner
         android:id="@+id/Who_can_access"
         android:layout_width="0dp"
@@ -92,6 +81,7 @@
         android:layout_marginTop="41dp"
         android:layout_marginEnd="50dp"
         android:layout_marginRight="50dp"
+        android:onClick="save_but"
         android:text="@string/Save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rm_desc" />

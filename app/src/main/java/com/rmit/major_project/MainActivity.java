@@ -30,7 +30,7 @@ public class MainActivity extends Activity
         implements NfcAdapter.OnNdefPushCompleteCallback,
         NfcAdapter.CreateNdefMessageCallback {
     //The array lists to hold our messages
-    private ArrayList<String> messagesToSendArray = new ArrayList<>();
+    private static ArrayList<String> messagesToSendArray = new ArrayList<>();
     private ArrayList<String> messagesReceivedArray = new ArrayList<>();
 
     //Text boxes to add and display our messages
@@ -42,6 +42,7 @@ public class MainActivity extends Activity
 
     public static int  target_door=0;
 
+    private static final int UPDATE_CONDS_CODE=10;
 
 
 
@@ -79,82 +80,39 @@ public class MainActivity extends Activity
         final AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
-    public void Get_target_door()
-    {
-        ScannerRequestDialogue("##00000##");
-        //String newMessage ="##00001##";
-        //addMessage(newMessage);
-
-
+    public boolean has_access() {
+        //TODO Database lookup for access
+        return true;
     }
+
     public void Unlock_door(View view)
     {
-        if(target_door==0) // check that there is a target door
-        {
-            Get_target_door();
-
-
-        }
-        else {
-            //Check if user has access to door(BD lookup) TODO
-            //if(USER HAS ACCESS){
-            ScannerRequestDialogue("##00010##");
-            //}
-        /*else
-            {
-                AccessDeniedAlert();
-            }*/
-        }
-
-
+        ScannerRequestDialogue("##00020##");
     }
     public void View_current_conds(View view)
     {
-        if(target_door==0) // check that there is a target door
-        {
-            Get_target_door();
+        ScannerRequestDialogue("##00002##");//Send climate data NFC message
+    }
+    public void View_current_conts(View view)
+    {
+        ScannerRequestDialogue("##00004##");//Send climate data NFC message
 
-
-        }
-        else
-            {
-                ScannerRequestDialogue("##00002##");//Send climate data NFC message
-             }
-
-        //wait for NFC handler to handel the response
     }
     public void Update_contents(View view)
     {
-        if(target_door==0) // check that there is a target door
-        {
-            Get_target_door();
+        ScannerRequestDialogue("##00022##");
 
-
-        }
-        else {
-            to_update_conts_screen();// move to update_conts activity
-            while (messagesToSendArray==null)
-            { //Empty loop}
-            }
             //TODO
             //get user to enter data
             // take data and send it in update contents NFC message
             // display the request scanner screen
             // wait for the scanner to send back a room contents NFC message
-        }
+
     }
     public void Update_conds(View view)
     {
-        if(target_door==0) // check that there is a target door
-        {
-            Get_target_door();
+        ScannerRequestDialogue("##00024##");
 
-        }
-        else {
-            to_update_conds_screen();// move to update_conts activity
-            while (messagesToSendArray == null) { //Empty loop}
-            }
-        }
         // move to update_Conds activity
         //get user to enter data
         // take data and send it in update conditions NFC message
@@ -163,10 +121,10 @@ public class MainActivity extends Activity
 
     }
 
-    public void addMessage(String message) {
+    public static void addMessage(String message) {
         messagesToSendArray.add(message);
 
-        Toast.makeText(this, "Added Message", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Added Message", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -240,45 +198,106 @@ public class MainActivity extends Activity
 
 
                 }
-                if((messagesReceivedArray.get(0).contains("##00001##"))) //door_number
+
+
+
+
+
+
+
+                if((messagesReceivedArray.get(0).contains("##00021##"))) //door_number for unlock request
                 {
                     if(messagesReceivedArray.size()>1)
                     {
                         target_door=Integer.parseInt(messagesReceivedArray.get(1));
                         Toast.makeText(this,"Door number is "+target_door,Toast.LENGTH_LONG).show();
+                        if (has_access())
+                        {
+                            addMessage("##00010##");
+                        }
+
+                        else
+                        {
+                            AccessDeniedAlert();
+                        }
                     }
                     else
                     {Toast.makeText(this,"ERROR NO DOOR NUMBER SENT",Toast.LENGTH_LONG).show(); }
                 }
+                if((messagesReceivedArray.get(0).contains("##00005##")))//sent current contents
+                {
+                    if(messagesReceivedArray.size()==5) {//TODO change how many variables should be sent
+                        to_cont_screen(messagesReceivedArray);
+                    }
+                    else{Toast.makeText(this,"ERROR NOT ENOUGH CONDITION DATA SENT: "+messagesReceivedArray.size(),Toast.LENGTH_LONG).show();}
+
+                }
                 if((messagesReceivedArray.get(0).contains("##00003##")))//sent current conditions
                 {
-                    if(messagesReceivedArray.size()>3) {
+                    if(messagesReceivedArray.size()==5) {
                         to_cond_screen(messagesReceivedArray);
                     }
                     else{Toast.makeText(this,"ERROR NOT ENOUGH CONDITION DATA SENT: "+messagesReceivedArray.size(),Toast.LENGTH_LONG).show();}
 
                 }
-                if((messagesReceivedArray.get(0).contains("##00005##")))// sent current contents
+                if((messagesReceivedArray.get(0).contains("##00023##"))) //door_number for update contents
                 {
-                    if(messagesReceivedArray.size()>3) {
-                        to_cont_screen(messagesReceivedArray);
+                    if(messagesReceivedArray.size()>1)
+                    {
+                        target_door=Integer.parseInt(messagesReceivedArray.get(1));
+                        Toast.makeText(this,"Door number is "+target_door,Toast.LENGTH_LONG).show();
+                        if (has_access())
+                        {
+                            to_update_conts_screen();
+                        }
+
+                        else
+                        {
+                            AccessDeniedAlert();
+                        }
                     }
-                    else {Toast.makeText(this, "ERROR NOT ENOUGH CONTENTS DATA SENT: " + messagesReceivedArray.size(), Toast.LENGTH_LONG).show(); }
+                    else
+                    {Toast.makeText(this,"ERROR NO DOOR NUMBER SENT",Toast.LENGTH_LONG).show(); }
+                }
+                if((messagesReceivedArray.get(0).contains("##00025##"))) //door_number for update conditions
+                {
+                    if(messagesReceivedArray.size()>1)
+                    {
+                        target_door=Integer.parseInt(messagesReceivedArray.get(1));
+                        Toast.makeText(this,"Door number is "+target_door,Toast.LENGTH_LONG).show();
+                        if (has_access())
+                        {
+                            to_update_conds_screen();
+                        }
+
+                        else
+                        {
+                            AccessDeniedAlert();
+                        }
+                    }
+                    else
+                    {Toast.makeText(this,"ERROR NO DOOR NUMBER SENT",Toast.LENGTH_LONG).show(); }
                 }
                 if((messagesReceivedArray.get(0).contains("##00007##"))) //sent update ack conditions
                 {
-                    if(messagesReceivedArray.size()>3) {
+                    if(messagesReceivedArray.size()==5) {
                         to_cond_screen(messagesReceivedArray);
                     }
                     else{Toast.makeText(this,"ERROR NOT ENOUGH CONDITION ACK DATA SENT: "+messagesReceivedArray.size(),Toast.LENGTH_LONG).show();}
                 }
                 if((messagesReceivedArray.get(0).contains("##00009##"))) //sent update ack contents
                 {
-                    if(messagesReceivedArray.size()>3) {
+                    if(messagesReceivedArray.size()==5) {//TODO change how many variables are needed
                         to_cont_screen(messagesReceivedArray);
                     }
                     else {Toast.makeText(this, "ERROR NOT ENOUGH CONTENTS ACK DATA SENT: " + messagesReceivedArray.size(), Toast.LENGTH_LONG).show(); }
                 }
+
+
+
+
+
+
                 if((messagesReceivedArray.get(0).contains("##00011##"))) //sent update ack contents
                 {
                     if(messagesReceivedArray.size()>1)
@@ -291,6 +310,11 @@ public class MainActivity extends Activity
                     }
                     else {Toast.makeText(this, "ERROR NO DOOR ACK" + messagesReceivedArray.size(), Toast.LENGTH_LONG).show(); }
                 }
+
+
+
+
+
 
                 updateTextViews();//REMEMBER TO REMOVE TODO
             }
@@ -321,9 +345,9 @@ public class MainActivity extends Activity
 
     }
     public void to_cont_screen(ArrayList data) { //TODO
-        /*Intent myIntent = new Intent(MainActivity.this, ViewCurrentConds.class);
+        Intent myIntent = new Intent(MainActivity.this, current_contents.class);
         myIntent.putStringArrayListExtra("Room_data", data);
-        startActivity(myIntent); //if do not need to get data back.*/
+        startActivity(myIntent); //if do not need to get data back.
 
     }
 
@@ -407,4 +431,5 @@ public class MainActivity extends Activity
             handleNfcIntent(getIntent());
         }
     }
+
 }

@@ -8,6 +8,7 @@
     <string name="Back">Back</string>
     <string name="unlock_rm">Unlock Room</string>
     <string name="show_rm_cond">Show Room Conditions</string>
+    <string name="show_rm_cont">Show Room Contents</string>
     <string name="update_rmcontents">Update Room Contents</string>
     <string name="update_rm_cond">Update Ideal Room Conditions</string>
     <string name="Save">save</string>
@@ -28,6 +29,7 @@
     <string name="max_lux_hint">Enter Maximum Lux</string>
 
     <string-array name="museums">
+        <item>Us</item>
         <item>M1</item>
         <item>M2</item>
         <item>M3</item>

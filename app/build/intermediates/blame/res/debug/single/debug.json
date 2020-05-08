@@ -96,6 +96,10 @@
         "source": "C:\\Users\\Jonat\\OneDrive - RMIT University\\3rd Year\\Mobile computing\\Mobile_computing_major_project\\app\\build\\generated\\res\\pngs\\debug\\drawable-mdpi\\ic_launcher_background.png"
     },
     {
+        "merged": "C:\\Users\\Jonat\\OneDrive - RMIT University\\3rd Year\\Mobile computing\\Mobile_computing_major_project\\app\\build\\intermediates\\res\\merged\\debug\\layout_activity_current_contents.xml.flat",
+        "source": "C:\\Users\\Jonat\\OneDrive - RMIT University\\3rd Year\\Mobile computing\\Mobile_computing_major_project\\app\\src\\main\\res\\layout\\activity_current_contents.xml"
+    },
+    {
         "merged": "C:\\Users\\Jonat\\OneDrive - RMIT University\\3rd Year\\Mobile computing\\Mobile_computing_major_project\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21_ic_launcher_background.xml.flat",
         "source": "C:\\Users\\Jonat\\OneDrive - RMIT University\\3rd Year\\Mobile computing\\Mobile_computing_major_project\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\ic_launcher_background.xml"
     },

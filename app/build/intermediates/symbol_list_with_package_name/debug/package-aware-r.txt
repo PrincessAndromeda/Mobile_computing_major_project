@@ -773,6 +773,7 @@ id bottom
 id button2
 id button3
 id button4
+id button5
 id buttonPanel
 id center_vertical
 id chains
@@ -842,7 +843,6 @@ id percent
 id progress_circular
 id progress_horizontal
 id radio
-id radioButton
 id right
 id right_icon
 id right_side
@@ -953,6 +953,7 @@ layout abc_search_dropdown_item_icons_2line
 layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
+layout activity_current_contents
 layout activity_main
 layout activity_update_conditions
 layout activity_update_conts2
@@ -1023,6 +1024,7 @@ string min_temp_hint
 string onlendprompt
 string search_menu_title
 string show_rm_cond
+string show_rm_cont
 string status_bar_notification_info_overflow
 string unlock_rm
 string update_rm_cond

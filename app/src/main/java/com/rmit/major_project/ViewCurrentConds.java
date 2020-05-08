@@ -38,12 +38,13 @@ public class ViewCurrentConds extends AppCompatActivity {
         if (intent.hasExtra("Room_data")){
             data = intent.getStringArrayListExtra("Room_data");
         }
-        if ((data.size() > 0)&(data.size()<=4)) {
-            tempIdeal.setText(data.get(1));
+        if ((data.size() > 0)&(data.size()<=5)) {
+            String room_number=data.get(1);
+            tempIdeal.setText(data.get(2));
             tempIdeal.append(" \u00B0C");
-            humIdeal.setText(data.get(2));
+            humIdeal.setText(data.get(3));
             humIdeal.append(" %");
-            lightIdeal.setText(data.get(3));
+            lightIdeal.setText(data.get(4));
             lightIdeal.append(" mLx");
         }
         tempCurrent.setText("Stub");

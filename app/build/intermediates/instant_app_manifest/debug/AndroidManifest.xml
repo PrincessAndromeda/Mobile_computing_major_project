@@ -25,6 +25,7 @@
         android:supportsRtl="true"
         android:testOnly="true"
         android:theme="@style/AppTheme" >
+        <activity android:name="com.rmit.major_project.current_contents" />
         <activity android:name="com.rmit.major_project.Update_conditions" />
         <activity android:name="com.rmit.major_project.Update_conts" />
         <activity android:name="com.rmit.major_project.ViewCurrentConds" />
