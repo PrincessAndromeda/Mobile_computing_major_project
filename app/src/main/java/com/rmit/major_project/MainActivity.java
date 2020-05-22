@@ -33,14 +33,18 @@ public class MainActivity extends Activity
     private static ArrayList<String> messagesToSendArray = new ArrayList<>();
     private ArrayList<String> messagesReceivedArray = new ArrayList<>();
 
+
     //Text boxes to add and display our messages
     //private EditText txtBoxAddMessage;
     private TextView txtReceivedMessages;
-    //private TextView txtMessagesToSend;
+    private EditText searchbar;
+    private Button searchbutton;
 
     private NfcAdapter mNfcAdapter;
+    public static myDbAdapter helper;
 
-    public static int  target_door=0;
+    public static int  target_door=1;
+    public static String Staff_name="staff2"; //TODO put buttons to change this
 
     private static final int UPDATE_CONDS_CODE=10;
 
@@ -80,9 +84,8 @@ public class MainActivity extends Activity
         final AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
-    public boolean has_access() {
-        //TODO Database lookup for access
-        return true;
+    public boolean has_access(String Name, int room) {
+        return helper.getaccess(Name,String.valueOf(room));
     }
 
     public void Unlock_door(View view)
@@ -101,13 +104,6 @@ public class MainActivity extends Activity
     public void Update_contents(View view)
     {
         ScannerRequestDialogue("##00022##");
-
-            //TODO
-            //get user to enter data
-            // take data and send it in update contents NFC message
-            // display the request scanner screen
-            // wait for the scanner to send back a room contents NFC message
-
     }
     public void Update_conds(View view)
     {
@@ -125,6 +121,64 @@ public class MainActivity extends Activity
         messagesToSendArray.add(message);
 
         //Toast.makeText(this, "Added Message", Toast.LENGTH_LONG).show();
+    }
+    public void search(View view)
+    {
+        final String rm_number=Integer.valueOf(searchbar.getText().toString()).toString();
+        if(helper.roomexists(rm_number))
+        {
+
+            final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setMessage("Do you want the room contents or current conditions");
+            alertDialogBuilder.setCancelable(false);
+            alertDialogBuilder.setPositiveButton("Conditions", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface arg0, int arg1) {
+                    ArrayList<String> Searchquereydata=new ArrayList<>();
+                    Searchquereydata.add("thisvalueisredundant");
+                    Searchquereydata.add(rm_number);
+                    //Searchquereydata.add(helper.gethum(rm_number)+helper.gettemp(rm_number));
+                   // Searchquereydata.add(helper.getvaluefromroom(rm_number,"ltemp"));
+                    //Searchquereydata.add(helper.getvaluefromroom(rm_number,"low"));
+                    //Searchquereydata.add("temp");
+                    Searchquereydata.add(helper.getvaluefromroom(rm_number,"ltemp")+"-"+helper.getvaluefromroom(rm_number,"htemp"));
+                    Searchquereydata.add(helper.getvaluefromroom(rm_number,"lhum")+"-"+helper.getvaluefromroom(rm_number,"hum"));
+                    Searchquereydata.add(helper.getvaluefromroom(rm_number,"llux")+"-"+helper.getvaluefromroom(rm_number,"hlux"));
+                    to_cond_screen(Searchquereydata);
+                }
+            });
+            alertDialogBuilder.setNegativeButton("Contents", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface arg0, int arg1) {
+                    ArrayList<String> Searchquereydata=new ArrayList<>();
+                    Searchquereydata.add("thisvalueisredundant");
+                    Searchquereydata.add(rm_number);
+                    Searchquereydata.add(helper.getvaluefromroom(rm_number,"origin"));
+                    Searchquereydata.add(helper.getvaluefromroom(rm_number,"description"));
+                    to_cont_screen(Searchquereydata);
+                }
+            });
+
+            final AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
+        else
+        {
+            final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setTitle("Room does not exist");
+            alertDialogBuilder.setMessage("Please enter a valid room number");
+            alertDialogBuilder.setCancelable(false);
+            alertDialogBuilder.setNeutralButton("Close",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface arg0, int arg1) {
+                    //Toast.makeText(MainActivity.this,"You clicked yes button",Toast.LENGTH_LONG).show();
+                }
+            });
+
+            final AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
+
     }
 
     @Override
@@ -195,25 +249,16 @@ public class MainActivity extends Activity
                     //Make sure we don't pass along our AAR (Android Applicatoin Record)
                     if (string.equals(getPackageName())) { continue; }
                     messagesReceivedArray.add(string);
-
-
                 }
-
-
-
-
-
-
-
                 if((messagesReceivedArray.get(0).contains("##00021##"))) //door_number for unlock request
                 {
                     if(messagesReceivedArray.size()>1)
                     {
                         target_door=Integer.parseInt(messagesReceivedArray.get(1));
                         Toast.makeText(this,"Door number is "+target_door,Toast.LENGTH_LONG).show();
-                        if (has_access())
+                        if (has_access(Staff_name,target_door))
                         {
-                            addMessage("##00010##");
+                            ScannerRequestDialogue("##00010##");
                         }
 
                         else
@@ -226,7 +271,7 @@ public class MainActivity extends Activity
                 }
                 if((messagesReceivedArray.get(0).contains("##00005##")))//sent current contents
                 {
-                    if(messagesReceivedArray.size()==5) {//TODO change how many variables should be sent
+                    if(messagesReceivedArray.size()>=4) {
                         to_cont_screen(messagesReceivedArray);
                     }
                     else{Toast.makeText(this,"ERROR NOT ENOUGH CONDITION DATA SENT: "+messagesReceivedArray.size(),Toast.LENGTH_LONG).show();}
@@ -234,7 +279,7 @@ public class MainActivity extends Activity
                 }
                 if((messagesReceivedArray.get(0).contains("##00003##")))//sent current conditions
                 {
-                    if(messagesReceivedArray.size()==5) {
+                    if(messagesReceivedArray.size()>=5) {
                         to_cond_screen(messagesReceivedArray);
                     }
                     else{Toast.makeText(this,"ERROR NOT ENOUGH CONDITION DATA SENT: "+messagesReceivedArray.size(),Toast.LENGTH_LONG).show();}
@@ -246,9 +291,9 @@ public class MainActivity extends Activity
                     {
                         target_door=Integer.parseInt(messagesReceivedArray.get(1));
                         Toast.makeText(this,"Door number is "+target_door,Toast.LENGTH_LONG).show();
-                        if (has_access())
+                        if (has_access(Staff_name,target_door))
                         {
-                            to_update_conts_screen();
+                            to_update_conts_screen(target_door);
                         }
 
                         else
@@ -265,9 +310,9 @@ public class MainActivity extends Activity
                     {
                         target_door=Integer.parseInt(messagesReceivedArray.get(1));
                         Toast.makeText(this,"Door number is "+target_door,Toast.LENGTH_LONG).show();
-                        if (has_access())
+                        if (has_access(Staff_name,target_door))
                         {
-                            to_update_conds_screen();
+                            to_update_conds_screen(target_door);
                         }
 
                         else
@@ -280,14 +325,18 @@ public class MainActivity extends Activity
                 }
                 if((messagesReceivedArray.get(0).contains("##00007##"))) //sent update ack conditions
                 {
-                    if(messagesReceivedArray.size()==5) {
+                    if(messagesReceivedArray.size()>=5) {
+                        //TODO seperate the incoming strings into their upper and lower values and then update the database with that
                         to_cond_screen(messagesReceivedArray);
                     }
                     else{Toast.makeText(this,"ERROR NOT ENOUGH CONDITION ACK DATA SENT: "+messagesReceivedArray.size(),Toast.LENGTH_LONG).show();}
                 }
                 if((messagesReceivedArray.get(0).contains("##00009##"))) //sent update ack contents
                 {
-                    if(messagesReceivedArray.size()==5) {//TODO change how many variables are needed
+                    if(messagesReceivedArray.size()>=4) {
+                        helper.roomupdate("description",messagesReceivedArray.get(3),String.valueOf(Integer.valueOf(messagesReceivedArray.get(1))));
+                        helper.roomupdate("origin",messagesReceivedArray.get(2),String.valueOf(Integer.valueOf(messagesReceivedArray.get(1))));
+                        helper.accessupdate(messagesReceivedArray.get(4),String.valueOf(Integer.valueOf(messagesReceivedArray.get(1))));
                         to_cont_screen(messagesReceivedArray);
                     }
                     else {Toast.makeText(this, "ERROR NOT ENOUGH CONTENTS ACK DATA SENT: " + messagesReceivedArray.size(), Toast.LENGTH_LONG).show(); }
@@ -302,7 +351,7 @@ public class MainActivity extends Activity
                 {
                     if(messagesReceivedArray.size()>1)
                     {
-                        if (Integer.parseInt(messagesReceivedArray.get(1)) == 1) {
+                        if (Integer.parseInt(messagesReceivedArray.get(1)) >= 1) {
                             Toast.makeText(this, "DOOR UNLOCKED", Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(this, "DOOR LOCKED TRY AGAIN", Toast.LENGTH_LONG).show();
@@ -344,20 +393,20 @@ public class MainActivity extends Activity
         startActivity(myIntent); //if do not need to get data back.
 
     }
-    public void to_cont_screen(ArrayList data) { //TODO
+    public void to_cont_screen(ArrayList data) {
         Intent myIntent = new Intent(MainActivity.this, current_contents.class);
         myIntent.putStringArrayListExtra("Room_data", data);
         startActivity(myIntent); //if do not need to get data back.
 
     }
 
-    public void to_update_conts_screen() {
+    public void to_update_conts_screen(int room_number) {
         Intent myIntent = new Intent(MainActivity.this, Update_conts.class);
         startActivity(myIntent); //if do not need to get data back.
 
     }
 
-    public void to_update_conds_screen() {
+    public void to_update_conds_screen(int room_number) {
         Intent myIntent = new Intent(MainActivity.this, Update_conditions.class);
         startActivity(myIntent); //if do not need to get data back.
     }
@@ -405,8 +454,9 @@ public class MainActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        helper = new myDbAdapter(this);
 
-
+        searchbar=(EditText) findViewById(R.id.editText);
 
         //Check if NFC is available on device
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);

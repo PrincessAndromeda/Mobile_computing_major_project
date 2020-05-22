@@ -45,6 +45,9 @@ public class Update_conditions extends AppCompatActivity {
                 MainActivity.addMessage(Temprange);
                 MainActivity.addMessage(Humrange);
                 MainActivity.addMessage(Luxrange);
+               // MainActivity.helper.update("room",)
+
+
                 finish();
 
                 //finish();

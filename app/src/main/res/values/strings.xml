@@ -20,6 +20,9 @@
     <string name="max_hum">Maximum Humidity</string>
     <string name="min_lux">Minimum Lux</string>
     <string name="max_lux">Maximum Lux</string>
+    <string name="Origin">Museum Of Origin:</string>
+    <string name="cont_desc">Description of contents:</string>
+    <string name="Room_Number">Room Number: </string>
 
     <string name="min_temp_hint">Enter Minimum Temp.</string>
     <string name="max_temp_hint">Enter Maximum Temp.</string>

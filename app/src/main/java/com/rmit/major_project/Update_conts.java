@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,10 +17,12 @@ public class Update_conts extends Activity implements AdapterView.OnItemSelected
     Spinner on_lend_from;
     Spinner user_lvl;
     EditText description;
+    int data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_update_conts2);
         description=(EditText) findViewById(R.id.rm_desc);
         on_lend_from = (Spinner) findViewById(R.id.On_lend_from);
@@ -71,10 +74,11 @@ public class Update_conts extends Activity implements AdapterView.OnItemSelected
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
                 //Toast.makeText(MainActivity.this,"You clicked yes button",Toast.LENGTH_LONG).show();
+
                 MainActivity.addMessage("##00008##");
                 MainActivity.addMessage(onlend);
-                MainActivity.addMessage(User_lvl);
                 MainActivity.addMessage(Room_desc);
+                MainActivity.addMessage(User_lvl);
                 finish();
                 }
         });

@@ -14,7 +14,7 @@
         android:layout_marginTop="30dp"
         android:fontFamily="serif"
         android:gravity="center_horizontal|center_vertical"
-        android:text="Current Room Conditions"
+        android:text="Room Conditions"
         android:textAllCaps="false"
         android:textSize="44sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Main_Title" />
+        app:layout_constraintTop_toBottomOf="@+id/Room_table" />
 
     <TableRow
         android:id="@+id/Temp_ideal"
@@ -211,4 +211,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Light_current" />
+
+    <TableRow
+        android:id="@+id/Room_table"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Main_Title">
+
+        <TextView
+            android:id="@+id/rm_number_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Room_Number" />
+
+        <TextView
+            android:id="@+id/rm_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </TableRow>
 </androidx.constraintlayout.widget.ConstraintLayout>
