@@ -39,16 +39,36 @@ public class MainActivity extends Activity
     private TextView txtReceivedMessages;
     private EditText searchbar;
     private Button searchbutton;
+    private TextView stafflvl;
 
     private NfcAdapter mNfcAdapter;
     public static myDbAdapter helper;
 
     public static int  target_door=1;
-    public static String Staff_name="staff2"; //TODO put buttons to change this
+    public static String Staff_name="staff2";
 
     private static final int UPDATE_CONDS_CODE=10;
 
-
+    public void staff1(View view)
+    {
+        Staff_name="staff1";
+        stafflvl.setText(Staff_name);
+    }
+    public void staff2(View view)
+    {
+        Staff_name="staff2";
+        stafflvl.setText(Staff_name);
+    }
+    public void staff3(View view)
+    {
+        Staff_name="staff3";
+        stafflvl.setText(Staff_name);
+    }
+    public void staff4(View view)
+    {
+        Staff_name="staff4";
+        stafflvl.setText(Staff_name);
+    }
 
     public void ScannerRequestDialogue(final String message){
 
@@ -457,9 +477,11 @@ public class MainActivity extends Activity
         helper = new myDbAdapter(this);
 
         searchbar=(EditText) findViewById(R.id.editText);
+        stafflvl=(TextView) findViewById(R.id.textView7);
 
         //Check if NFC is available on device
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        stafflvl.setText(Staff_name);
         if(mNfcAdapter != null) {
             //This will refer back to createNdefMessage for what it will send
             mNfcAdapter.setNdefPushMessageCallback(this, this);
@@ -471,6 +493,7 @@ public class MainActivity extends Activity
             Toast.makeText(this, "NFC not available on this device",
                     Toast.LENGTH_SHORT).show();
         }
+
 
 
 
