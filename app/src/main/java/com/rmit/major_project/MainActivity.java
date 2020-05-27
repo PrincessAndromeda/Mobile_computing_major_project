@@ -157,12 +157,8 @@ public class MainActivity extends Activity
                     ArrayList<String> Searchquereydata=new ArrayList<>();
                     Searchquereydata.add("thisvalueisredundant");
                     Searchquereydata.add(rm_number);
-                    //Searchquereydata.add(helper.gethum(rm_number)+helper.gettemp(rm_number));
-                   // Searchquereydata.add(helper.getvaluefromroom(rm_number,"ltemp"));
-                    //Searchquereydata.add(helper.getvaluefromroom(rm_number,"low"));
-                    //Searchquereydata.add("temp");
                     Searchquereydata.add(helper.getvaluefromroom(rm_number,"ltemp")+"-"+helper.getvaluefromroom(rm_number,"htemp"));
-                    Searchquereydata.add(helper.getvaluefromroom(rm_number,"lhum")+"-"+helper.getvaluefromroom(rm_number,"hum"));
+                    Searchquereydata.add(helper.getvaluefromroom(rm_number,"lhum")+"-"+helper.getvaluefromroom(rm_number,"hhum"));
                     Searchquereydata.add(helper.getvaluefromroom(rm_number,"llux")+"-"+helper.getvaluefromroom(rm_number,"hlux"));
                     to_cond_screen(Searchquereydata);
                 }
@@ -346,7 +342,16 @@ public class MainActivity extends Activity
                 if((messagesReceivedArray.get(0).contains("##00007##"))) //sent update ack conditions
                 {
                     if(messagesReceivedArray.size()>=5) {
-                        //TODO seperate the incoming strings into their upper and lower values and then update the database with that
+                        String temp=messagesReceivedArray.get(2);
+                        String hum=messagesReceivedArray.get(3);
+                        String lux=messagesReceivedArray.get(4);
+                        String ltemp=temp.substring(0,temp.indexOf('-'));
+                        String htemp=temp.substring((temp.indexOf('-')+1));
+                        String lhum=hum.substring(0,hum.indexOf('-'));
+                        String hhum=hum.substring((hum.indexOf('-')+1));
+                        String llux=lux.substring(0,lux.indexOf('-'));
+                        String hlux=lux.substring((lux.indexOf('-')+1));
+                        helper.updateconditions(ltemp,htemp,lhum,hhum,llux,hlux,String.valueOf(Integer.valueOf(messagesReceivedArray.get(1))));
                         to_cond_screen(messagesReceivedArray);
                     }
                     else{Toast.makeText(this,"ERROR NOT ENOUGH CONDITION ACK DATA SENT: "+messagesReceivedArray.size(),Toast.LENGTH_LONG).show();}

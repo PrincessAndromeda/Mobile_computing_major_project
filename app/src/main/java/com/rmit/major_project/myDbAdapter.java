@@ -183,6 +183,21 @@ public class myDbAdapter {
         return count;
     }
 
+    public int updateconditions(String ltemp,String htemp,String lhum,String hhum,String hlux,String llux,String rm_number)//Generic update function
+    {
+        SQLiteDatabase db = myhelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("ltemp",ltemp);
+        contentValues.put("htemp",htemp);
+        contentValues.put("lhum",lhum);
+        contentValues.put("hhum",hhum);
+        contentValues.put("llux",llux);
+        contentValues.put("hlux",hlux);
+        String[] whereArgs= {rm_number};
+        int count =db.update("room",contentValues, "rm_number= ?",whereArgs);
+        return count;
+    }
+
 
 
 
